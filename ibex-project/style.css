@@ -1,0 +1,14 @@
+body {
+    background: #bcbddc;
+}
+
+div.tooltip {
+    position: absolute;
+    width: 110px;
+    height: 90px;
+    padding: 6px;
+    font: 12px sans-serif;
+    border: 0px;
+    border-radius: 12px;
+    pointer-events: none;
+}

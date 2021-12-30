@@ -10,6 +10,7 @@ const ageToday = age(today)
 var margin = { top: 20, right: 20, bottom: 40, left: 60 },
     width = 800 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
+
 // create svg element, respecting margins
 var svg = d3.select("#chart")
     .append("svg")
@@ -20,12 +21,16 @@ var svg = d3.select("#chart")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
+// create elemetGroup
 const elementGroup = svg.append('g').attr('id', "elementGroup")
 
 const axisGroup = svg.append('g').attr('id', "axisGroup")
+
+// Add X axisGroup
 const xAxisGroup = axisGroup.append("g").attr('id', "xAxisGroup")
     .attr("transform", "translate(0," + height + ")")
 
+// Add Y axisGroup
 const yAxisGroup = axisGroup.append("g").attr('id', "yAxisGroup")
 
 //Read the data
@@ -36,19 +41,19 @@ d3.csv("data.csv").then(data => {
         })
         //console.log(data)
 
-    // Add X axis
+    // Add X axis with domain and range
     var x = d3.scaleBand().domain(data.map(d => d.year)).range([0, width]).padding(0.2);
 
     let xAxis = d3.axisBottom().scale(x)
     xAxisGroup.call(xAxis)
 
-    // Add Y axis
+    // Add Y axis with domain and range
     var y = d3.scaleLinear().domain([(ageToday - 31), ageToday]).range([height, 0]);
 
     let yAxis = d3.axisLeft().scale(y)
     yAxisGroup.call(yAxis)
 
-
+    // ------------------ OPCIONAL: ETIQUETAS EN LOS EJES -------------------
     // Add X axis label:
     elementGroup.append("text")
         .attr("text-anchor", "end")
@@ -75,8 +80,7 @@ d3.csv("data.csv").then(data => {
         .attr("y", d => y(d.age))
         .attr("height", d => height - y(d.age))
         .attr("width", x.bandwidth())
-        //.attr("fill", randomColor)
-        //.style("fill", function(d) { return myColor(d.name) })
+        // Diferenciando por la novia
         .style("fill", function(d) {
             if (d.name == "Gisele Bündchen") {
                 return "#762a83"
@@ -107,26 +111,25 @@ d3.csv("data.csv").then(data => {
         .on('mouseover', highlight)
         .on('mouseout', removeHighlight)
 
+    //-----------------------------------------------------------------------------------------
+    //------------------------------- SEGUNDA GRÁFICA -----------------------------------------
 
-
-    // Add X axis
+    // Add X axis with domain and range
     var xleo = d3.scaleTime().domain(d3.extent(data.map(d => d.year))).range([0, width]);
 
 
-    // Add Y axis
+    // Add Y axis with domain and range
     var yleo = d3.scaleLinear().domain([16, ageToday]).range([height, 0]);
 
 
-    elementGroup //.selectAll().data(data).enter()
+    elementGroup
         .datum(data)
         .append('path')
-        // binds data to the line
         .attr('id', 'ageDiCaprio')
         .attr('stroke', '#FF8C00')
         .attr('stroke-width', '2.5')
         .attr('d', d3.line()
             .x(d => {
-                //console.log(xleo(d.year));
                 return xleo(d.year);
             })
             .y(d => {
@@ -177,7 +180,7 @@ d3.csv("data.csv").then(data => {
         .attr("class", "tooltip")
         .style("background-color", "#7bccc4")
 
-    //nuevo siguiendo el ejercicio 11
+    //Add highlight function
 
     function highlight(d) {
 
